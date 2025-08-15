@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<body>
+<div th:fragment="metrics" id="metrics">
+  <ul style="list-style:none; padding-left:0;">
+    <li>A: <strong th:text="${counts['A']}">0</strong></li>
+    <li>B: <strong th:text="${counts['B']}">0</strong></li>
+    <li>C: <strong th:text="${counts['C']}">0</strong></li>
+  </ul>
+</div>
+</body>
+</html>
