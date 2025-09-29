@@ -1,0 +1,27 @@
+databaseChangeLog:
+  - include:
+      file: db/common/commonChangeLog.yaml
+  - include:
+      file: db/release/initial/ddl/stationTable.yaml
+  - include:
+      file: db/release/initial/dml/add_station_data.yaml
+  - include:
+      file: db/release/initial/dml/addStationEquipmentData.yaml
+  - include:
+      file: db/release/initial/dml/addRadarStationEquipmentData.yaml
+  - include:
+      file: db/release/0.0.44/unknownEquipments.yaml
+  - include:
+      file: db/release/0.0.50/addEquipmentTableColumns.yaml
+  - include:
+      file: db/release/0.0.51/dll/addEquipmentIdentifierTables.yaml
+  - include:
+      file: db/release/0.0.51/dml/addEquipmentIdentifierTypes.yaml
+  - include:
+      file: db/release/0.0.51/dll/removeRpgIdColumnFromEquipment.yaml
+  - include:
+      file: db/release/0.0.55/dml/addGoesrStationEquipmentData.yaml
+  - include:
+      file: db/release/pulsar/addOutboxEvents.yaml
+  - include:
+      file: db/release/pulsar/addSnapshotCheckpoints.yaml

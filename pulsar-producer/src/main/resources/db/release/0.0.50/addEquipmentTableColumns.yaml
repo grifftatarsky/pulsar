@@ -1,0 +1,16 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20250602-1100
+      author: mtilden
+      changes:
+        - addColumn:
+            tableName: equipment
+            columns:
+              - column:
+                  name: start_date_time
+                  type: TIMESTAMP WITHOUT TIME ZONE
+                  remarks: the date / time the equipment was activated
+              - column:
+                  name: end_date_time
+                  type: TIMESTAMP WITHOUT TIME ZONE
+                  remarks: the date / time the equipment was deactivated

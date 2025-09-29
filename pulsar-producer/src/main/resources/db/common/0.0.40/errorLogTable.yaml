@@ -1,0 +1,103 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20240618-0001
+      labels: initial, common, errorLog
+      author: mtilden
+      preConditions:
+        onFail: MARK_RAN
+        not:
+          tableExists:
+            tableName: error_log
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pkey_error_log_id
+                  name: error_log_id
+                  type: BIGSERIAL
+              - column:
+                  name: filename
+                  type: VARCHAR(255)
+              - column:
+                  name: error_location
+                  type: VARCHAR(255)
+              - column:
+                  name: exception
+                  type: TEXT
+              - column:
+                  name: stack_trace
+                  type: TEXT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: entry_dttm
+                  type: TIMESTAMP WITHOUT TIME ZONE
+            remarks: Table to store error information about decoded files in
+            tableName: error_log
+        - createIndex:
+            columns:
+              - column:
+                  name: filename
+            indexName: idx_error_log__filename
+            tableName: error_log
+        - createIndex:
+            columns:
+              - column:
+                  name: error_location
+            indexName: idx_error_log__error_location
+            tableName: error_log
+
+  - changeSet:
+      id: 20240423-0001
+      labels: update, common, errorLog
+      author: gtatarsky
+      preConditions:
+        onFail: MARK_RAN
+        tableExists:
+          tableName: error_log
+        columnExists:
+          tableName: error_log
+          columnName: filename
+      changes:
+        - addColumn:
+            tableName: error_log
+            columns:
+              - column:
+                  name: data_type
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: bucket
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: true
+        - renameColumn:
+            tableName: error_log
+            oldColumnName: filename
+            newColumnName: key
+            columnDataType: VARCHAR(255)
+        - dropIndex:
+            tableName: error_log
+            indexName: idx_error_log__filename
+        - createIndex:
+            tableName: error_log
+            indexName: idx_error_log__key
+            columns:
+              - column:
+                  name: key
+        - createIndex:
+            tableName: error_log
+            indexName: idx_error_log__data_type
+            columns:
+              - column:
+                  name: data_type
+        - createIndex:
+            tableName: error_log
+            indexName: idx_error_log__bucket
+            columns:
+              - column:
+                  name: bucket

@@ -41,6 +41,13 @@ public class OutboxEvent
     @Column(nullable = false)
     private Instant createdAt;
 
+    @Column(nullable = false)
+    private int attempts = 0;
+
+    @Column(name = "next_attempt_at")
+    private Instant nextAttemptAt;
+
+    @Column
     private Instant sentAt;
 
     public OutboxEvent(String topic, String messageKey, String payload)

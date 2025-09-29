@@ -1,13 +1,14 @@
 package com.gpt.pulsarproducer;
 
 
-import com.gpt.pulsarproducer.config.PulsarProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
-@EnableConfigurationProperties(PulsarProperties.class)
+@EnableScheduling
+@EnableConfigurationProperties
 public class PulsarProducerApplication
 {
     public static void main(String[] args)

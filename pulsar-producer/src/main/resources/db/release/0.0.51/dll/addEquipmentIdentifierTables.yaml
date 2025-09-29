@@ -1,0 +1,178 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20250627-0200
+      labels: equipmentIdentifiers
+      author: mtilden
+      preConditions:
+        onFail: MARK_RAN
+        not:
+          tableExists:
+            tableName: equipment_type_identifiers
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pkey_identifier_id
+                  name: identifier_id
+                  remarks: Unique internal identifier
+                  type: BIGSERIAL
+              - column:
+                  constraints:
+                    nullable: false
+                  name: identifier
+                  type: TEXT
+              - column:
+                  name: description
+                  type: TEXT
+              - column:
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: now()
+                  name: entry_dttm
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  defaultValueComputed: now()
+                  name: update_dttm
+                  type: TIMESTAMP WITHOUT TIME ZONE
+            remarks: Table to store stations in
+            tableName: equipment_type_identifiers
+        - addUniqueConstraint:
+            columnNames: identifier
+            constraintName: uk_equipment_type_identifiers
+            tableName: equipment_type_identifiers
+        - createIndex:
+            columns:
+              - column:
+                  name: entry_dttm
+            indexName: idx_equipment_type_identifiers_entry_dttm
+            tableName: equipment_type_identifiers
+
+  - changeSet:
+      id: 20250627-0210
+      labels: equipmentIdentifiers
+      author: mtilden
+      preConditions:
+        onFail: MARK_RAN
+        not:
+          tableExists:
+            tableName: equipment_type_identifiers_equipment_types
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  name: identifier_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: equipment_type
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: now()
+                  name: entry_dttm
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  defaultValueComputed: now()
+                  name: update_dttm
+                  type: TIMESTAMP WITHOUT TIME ZONE
+            remarks: Table to relation a equipmentType to an identifier
+            tableName: equipment_type_identifiers_equipment_types
+        - addUniqueConstraint:
+            columnNames: identifier_id, equipment_type
+            constraintName: uk_equipment_type_identifiers_equipment_types
+            tableName: equipment_type_identifiers_equipment_types
+        - addForeignKeyConstraint:
+            baseColumnNames: identifier_id
+            baseTableName: equipment_type_identifiers_equipment_types
+            constraintName: fk_equipment_type_identifiers__identifier_id
+            deferrable: ${deferrable}
+            initiallyDeferred: false
+            onDelete: CASCADE
+            onUpdate: NO ACTION
+            referencedColumnNames: identifier_id
+            referencedTableName: equipment_type_identifiers
+            validate: true
+
+  - changeSet:
+      id: 20250627-0220
+      labels: equipmentIdentifiers
+      author: mtilden
+      preConditions:
+        onFail: MARK_RAN
+        not:
+          tableExists:
+            tableName: equipment_identifiers
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pkey_equipment_identifier_id
+                  name: equipment_identifier_id
+                  remarks: Unique internal identifier
+                  type: BIGSERIAL
+              - column:
+                  constraints:
+                    nullable: false
+                  name: equipment_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: identifier_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: value
+                  type: TEXT
+              - column:
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: now()
+                  name: entry_dttm
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  defaultValueComputed: now()
+                  name: update_dttm
+                  type: TIMESTAMP WITHOUT TIME ZONE
+            tableName: equipment_identifiers
+        - addForeignKeyConstraint:
+            baseColumnNames: equipment_id
+            baseTableName: equipment_identifiers
+            constraintName: fk_equipment_equipment_identifiers__equipment_id
+            deferrable: ${deferrable}
+            initiallyDeferred: false
+            onDelete: CASCADE
+            onUpdate: NO ACTION
+            referencedColumnNames: equipment_id
+            referencedTableName: equipment
+            validate: true
+        - addForeignKeyConstraint:
+            baseColumnNames: identifier_id
+            baseTableName: equipment_identifiers
+            constraintName: fk_equipment_identifiers_equipment_type_identifiers__id
+            deferrable: ${deferrable}
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: identifier_id
+            referencedTableName: equipment_type_identifiers
+            validate: true
+        - addUniqueConstraint:
+            columnNames: identifier_id, equipment_id
+            constraintName: uk_equipment_identifiers
+            tableName: equipment_identifiers
+        - createIndex:
+            columns:
+              - column:
+                  name: entry_dttm
+            indexName: idx_equipment_identifiers_entry_dttm
+            tableName: equipment_identifiers

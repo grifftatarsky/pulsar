@@ -1,0 +1,65 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgis/postgis:latest
+    platform: linux/amd64  # Avoids platform mismatch issues
+    ports:
+      - '5433:5432'
+    container_name: nimbus-station-postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=noaa
+    volumes:
+      - postgis_data:/var/lib/postgresql/data
+      - ./dbInitScripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql
+
+  pulsar:
+    image: apachepulsar/pulsar:3.2.2
+    container_name: pulsar_single
+    command: bin/pulsar standalone
+    ports:
+      - "6650:6650"   # binary
+      - "8080:8080"   # admin http
+    healthcheck:
+      test: [ "CMD-SHELL", "bin/pulsar-admin clusters list >/dev/null 2>&1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+    restart: unless-stopped
+
+  pulsar-init:
+    image: apachepulsar/pulsar:3.2.2
+    container_name: pulsar_init
+    depends_on:
+      pulsar:
+        condition: service_healthy
+    entrypoint: [ "/bin/bash", "-c" ]
+    # Create a compacted changelog topic for stations and an optional events topic.
+    command: >
+      "bin/pulsar-admin topics create persistent://public/default/equipment.changelog || true;
+      bin/pulsar-admin topics create persistent://public/default/equipment_identifier.changelog || true;
+      bin/pulsar-admin topics create persistent://public/default/equipment_type_identifier.changelog || true"
+    restart: "no"
+
+  pulsar-express:
+    image: bbonnin/pulsar-express:latest
+    container_name: pulsar_express
+    depends_on:
+      pulsar:
+        condition: service_healthy
+    environment:
+      # Pulsar admin HTTP URL reachable from this container
+      PE_CONNECTION_URL: http://pulsar:8080
+      # Optional: name it in the UI
+      PE_CONNECTION_NAME: local-pulsar
+      # If you enable tokens in Pulsar later:
+      # PE_CONNECTION_TOKEN: "<your_jwt_token>"
+    ports:
+      - "3000:3000"  # UI
+    restart: unless-stopped
+
+volumes:
+  postgis_data:
+

@@ -1,0 +1,27 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20250721-0001
+      labels: update, common, errorLog
+      author: mshah
+      preConditions:
+        onFail: MARK_RAN
+        and:
+          - tableExists:
+              tableName: error_log
+          - not:
+              columnExists:
+                tableName: error_log
+                columnName: message
+      changes:
+        - addColumn:
+            tableName: error_log
+            columns:
+              - column:
+                  name: message
+                  type: TEXT
+                  constraints:
+                    nullable: true
+      rollback:
+        - dropColumn:
+            tableName: error_log
+            columnName: message

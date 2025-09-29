@@ -1,0 +1,52 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20250630-1400
+      labels: equipmentIdentifiers, data
+      author: mtilden
+      preConditions:
+        onFail: MARK_RAN
+        sqlCheck:
+          expectedResult: 0
+          sql: "select count(*) from equipment_type_identifiers"
+      changes:
+        - sql: "INSERT INTO equipment_type_identifiers(identifier, description) VALUES ('RPG_ID', null);"
+
+  - changeSet:
+      id: 20250630-1410
+      labels: equipmentIdentifiers, data
+      author: mtilden
+      preConditions:
+        onFail: MARK_RAN
+        sqlCheck:
+          expectedResult: 0
+          sql: "select count(*) from equipment_type_identifiers_equipment_types"
+      changes:
+        - sql: "INSERT INTO equipment_type_identifiers_equipment_types (identifier_id, equipment_type) 
+                VALUES ((SELECT identifier_id FROM equipment_type_identifiers eti WHERE eti.identifier = 'RPG_ID'), 'NEXRAD');"
+
+  - changeSet:
+      id: 20250630-1420
+      labels: equipmentIdentifiers, data
+      author: mtilden
+      preConditions:
+        onFail: MARK_RAN
+        sqlCheck:
+          expectedResult: 0
+          sql: >
+            SELECT COUNT(*) FROM equipment_identifiers ei
+            WHERE ei.identifier_id = (
+              SELECT identifier_id FROM equipment_type_identifiers 
+              WHERE identifier = 'RPG_ID'
+            )
+
+      changes:
+        - sql: INSERT INTO equipment_identifiers (equipment_id, identifier_id, value)
+            SELECT
+            e.equipment_id,
+            eti.identifier_id,
+            e.rpg_id::text
+            FROM equipment e
+            CROSS JOIN equipment_type_identifiers eti
+            WHERE e.equipment_type = 'NEXRAD'
+            AND e.rpg_id IS NOT NULL
+            AND eti.identifier = 'RPG_ID';

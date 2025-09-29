@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20250630-1440
+      labels: equipment, removeColumn
+      author: mtilden
+      preConditions:
+        onFail: MARK_RAN
+        columnExists:
+          columnName: rpg_id
+          tableName: equipment
+      changes:
+        - dropColumn:
+            columnName: rpg_id
+            tableName: equipment

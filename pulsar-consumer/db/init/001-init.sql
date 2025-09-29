@@ -1,27 +1,37 @@
--- Producer (SoT) DB
-CREATE DATABASE station_sot;
+CREATE OR REPLACE PROCEDURE manage_schema(schema_name text)
+    LANGUAGE plpgsql
+AS
+$$
+BEGIN
+    -- Drop schema if it exists and create it
+    EXECUTE format('DROP SCHEMA IF EXISTS %I CASCADE;', schema_name);
+    EXECUTE format('CREATE SCHEMA IF NOT EXISTS %I;', schema_name);
 
--- A couple of local consumer DBs (you can add more)
-CREATE DATABASE consumer_a;
-CREATE DATABASE consumer_b;
+-- Check if the user exists, and create the user if it does not exist
+    IF NOT EXISTS (SELECT 1
+                   FROM pg_roles
+                   WHERE rolname = format('nimbus_app_%I', schema_name))
+    THEN
+        EXECUTE format('CREATE USER nimbus_app_%I WITH PASSWORD %L;', schema_name, schema_name);
+    ELSE
+        RAISE NOTICE 'User nimbus_app_% already exists, skipping creation.', schema_name;
+    END IF;
 
--- Least-priv users
-CREATE ROLE producer_app WITH LOGIN PASSWORD 'producer_pw' NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT;
-CREATE ROLE consumer_a_app WITH LOGIN PASSWORD 'consumer_a_pw' NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT;
-CREATE ROLE consumer_b_app WITH LOGIN PASSWORD 'consumer_b_pw' NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT;
+    EXECUTE format('GRANT ALL PRIVILEGES ON SCHEMA %I TO nimbus_app_%I;', schema_name, schema_name);
+-- Grant all privileges on all tables and sequences within the schema to the user
+    EXECUTE format('GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA %I TO nimbus_app_%I;', schema_name, schema_name);
+    EXECUTE format('GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA %I TO nimbus_app_%I;', schema_name, schema_name);
 
-GRANT CONNECT ON DATABASE station_sot TO producer_app;
-GRANT CONNECT ON DATABASE consumer_a TO consumer_a_app;
-GRANT CONNECT ON DATABASE consumer_b TO consumer_b_app;
+-- Grant all privileges on all functions within the schema to the user (if applicable)
+    EXECUTE format('GRANT ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA %I TO nimbus_app_%I;', schema_name, schema_name);
+-- set search path
+    EXECUTE format('ALTER SCHEMA %I OWNER TO nimbus_app_%I;', schema_name, schema_name);
 
-\connect station_sot
-GRANT USAGE, CREATE ON SCHEMA public TO producer_app;
-GRANT TEMP ON DATABASE station_sot TO producer_app;
+END
+$$;
 
-\connect consumer_a
-GRANT USAGE, CREATE ON SCHEMA public TO consumer_a_app;
-GRANT TEMP ON DATABASE consumer_a TO consumer_a_app;
 
-\connect consumer_b
-GRANT USAGE, CREATE ON SCHEMA public TO consumer_b_app;
-GRANT TEMP ON DATABASE consumer_b TO consumer_b_app;
+CREATE EXTENSION IF NOT EXISTS postgis;
+CREATE EXTENSION IF NOT EXISTS postgis_raster;
+-- station must go last so the text, netcdf, and cave users exist
+CALL manage_schema('station');

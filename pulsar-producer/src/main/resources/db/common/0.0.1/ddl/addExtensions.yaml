@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: eam-entities-20230602-1100
+      author: mtilden
+      context: "test"
+      changes:
+        - sql: "CREATE EXTENSION IF NOT EXISTS postgis;"
+  - changeSet:
+      id: eam-entities-20230602-1101
+      author: mtilden
+      context: "test"
+      changes:
+        - sql: "CREATE EXTENSION IF NOT EXISTS postgis_raster;"

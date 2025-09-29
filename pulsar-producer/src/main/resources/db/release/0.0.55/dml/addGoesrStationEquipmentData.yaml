@@ -1,0 +1,128 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20250922-1800
+      labels: station, data
+      author: mtilden
+      preConditions:
+        onFail: MARK_RAN
+        sqlCheck:
+          expectedResult: 0
+          sql: "select count(*) from stations where call_sign = 'GOES-16'"
+      changes:
+        - sql: "INSERT INTO stations(call_sign, name, city, state, country, wmo_index, wmo_region, end_date, validated, entry_dttm, update_dttm)
+         VALUES ('GOES-16', 'GOES-16', null, null, null, null, null, null, false, now(), null);"
+  - changeSet:
+      id: 20250922-1801
+      labels: station, data
+      author: mtilden
+      preConditions:
+        onFail: MARK_RAN
+        sqlCheck:
+          expectedResult: 0
+          sql: "select count(*) from stations where call_sign = 'GOES-17'"
+      changes:
+        - sql: "INSERT INTO stations(call_sign, name, city, state, country, wmo_index, wmo_region, end_date, validated, entry_dttm, update_dttm)
+         VALUES ('GOES-17', 'GOES-17', null, null, null, null, null, null, false, now(), null);"
+  - changeSet:
+      id: 20250922-1802
+      labels: station, data
+      author: mtilden
+      preConditions:
+        onFail: MARK_RAN
+        sqlCheck:
+          expectedResult: 0
+          sql: "select count(*) from stations where call_sign = 'GOES-18'"
+      changes:
+        - sql: "INSERT INTO stations(call_sign, name, city, state, country, wmo_index, wmo_region, end_date, validated, entry_dttm, update_dttm)
+         VALUES ('GOES-18', 'GOES-18', null, null, null, null, null, null, false, now(), null);"
+  - changeSet:
+      id: 20250922-1803
+      labels: station, data
+      author: mtilden
+      preConditions:
+        onFail: MARK_RAN
+        sqlCheck:
+          expectedResult: 0
+          sql: "select count(*) from stations where call_sign = 'GOES-19'"
+      changes:
+        - sql: "INSERT INTO stations(call_sign, name, city, state, country, wmo_index, wmo_region, end_date, validated, entry_dttm, update_dttm)
+         VALUES ('GOES-19', 'GOES-19', null, null, null, null, null, null, false, now(), null);"
+  - changeSet:
+      id: 20250922-1804
+      labels: station, data
+      author: mtilden
+      preConditions:
+        onFail: MARK_RAN
+        sqlCheck:
+          expectedResult: 0
+          sql: "select count(*) from stations where call_sign = 'GOES-20'"
+      changes:
+        - sql: "INSERT INTO stations(call_sign, name, city, state, country, wmo_index, wmo_region, end_date, validated, entry_dttm, update_dttm)
+         VALUES ('GOES-20', 'GOES-20', null, null, null, null, null, null, false, now(), null);"
+
+#### equipments
+  - changeSet:
+      id: 20250922-1900
+      labels: equipment, data
+      author: mtilden
+      preConditions:
+        onFail: MARK_RAN
+        sqlCheck:
+          expectedResult: 0
+          sql: "select count(*) from equipment where station_id = (select station_id from stations where call_sign = 'GOES-16')"
+      changes:
+        - sql:
+            INSERT INTO equipment (station_id, equipment_type, location, validated, entry_dttm, update_dttm)
+            VALUES ((SELECT station_id FROM stations WHERE call_sign = 'GOES-16'), 'GOES_R', null, true, now(), null);
+  - changeSet:
+      id: 20250922-1901
+      labels: equipment, data
+      author: mtilden
+      preConditions:
+        onFail: MARK_RAN
+        sqlCheck:
+          expectedResult: 0
+          sql: "select count(*) from equipment where station_id = (select station_id from stations where call_sign = 'GOES-17')"
+      changes:
+        - sql:
+            INSERT INTO equipment (station_id, equipment_type, location, validated, entry_dttm, update_dttm)
+            VALUES ((SELECT station_id FROM stations WHERE call_sign = 'GOES-17'), 'GOES_R', null, true, now(), null);
+  - changeSet:
+      id: 20250922-1902
+      labels: equipment, data
+      author: mtilden
+      preConditions:
+        onFail: MARK_RAN
+        sqlCheck:
+          expectedResult: 0
+          sql: "select count(*) from equipment where station_id = (select station_id from stations where call_sign = 'GOES-18')"
+      changes:
+        - sql:
+            INSERT INTO equipment (station_id, equipment_type, location, validated, entry_dttm, update_dttm)
+            VALUES ((SELECT station_id FROM stations WHERE call_sign = 'GOES-18'), 'GOES_R', null, true, now(), null);
+  - changeSet:
+      id: 20250922-1903
+      labels: equipment, data
+      author: mtilden
+      preConditions:
+        onFail: MARK_RAN
+        sqlCheck:
+          expectedResult: 0
+          sql: "select count(*) from equipment where station_id = (select station_id from stations where call_sign = 'GOES-19')"
+      changes:
+        - sql:
+            INSERT INTO equipment (station_id, equipment_type, location, validated, entry_dttm, update_dttm)
+            VALUES ((SELECT station_id FROM stations WHERE call_sign = 'GOES-19'), 'GOES_R', null, true, now(), null);
+  - changeSet:
+      id: 20250922-1904
+      labels: equipment, data
+      author: mtilden
+      preConditions:
+        onFail: MARK_RAN
+        sqlCheck:
+          expectedResult: 0
+          sql: "select count(*) from equipment where station_id = (select station_id from stations where call_sign = 'GOES-20')"
+      changes:
+        - sql:
+            INSERT INTO equipment (station_id, equipment_type, location, validated, entry_dttm, update_dttm)
+            VALUES ((SELECT station_id FROM stations WHERE call_sign = 'GOES-20'), 'GOES_R', null, true, now(), null);

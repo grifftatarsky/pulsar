@@ -1,0 +1,11 @@
+databaseChangeLog:
+  -  property:
+       dbms:  postgresql
+       name:  deferrable
+       value:  true
+       global: true
+  -  property:
+       dbms:  h2
+       name:  deferrable
+       value:  false
+       global: true

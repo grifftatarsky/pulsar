@@ -1,0 +1,166 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20240618-0003
+      labels: initial, stations
+      author: mtilden
+      preConditions:
+        onFail: MARK_RAN
+        not:
+          tableExists:
+            tableName: stations
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pkey_station_id
+                  name: station_id
+                  remarks: Unique internal identifier of station
+                  type: BIGSERIAL
+              - column:
+                  name: call_sign
+                  type: VARCHAR(16)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  name: city
+                  type: VARCHAR(32)
+              - column:
+                  name: state
+                  type: VARCHAR(32)
+              - column:
+                  name: country
+                  type: VARCHAR(32)
+              - column:
+                  name: wmo_index
+                  type: INTEGER
+              - column:
+                  name: wmo_region
+                  type: INTEGER
+              - column:
+                  name: end_date
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  constraints:
+                    nullable: false
+                  defaultValue: false
+                  name: validated
+                  type: boolean
+              - column:
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: now()
+                  name: entry_dttm
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  defaultValueComputed: now()
+                  name: update_dttm
+                  type: TIMESTAMP WITHOUT TIME ZONE
+            remarks: Table to store stations in
+            tableName: stations
+        - addUniqueConstraint:
+            columnNames: call_sign
+            constraintName: uk_stations
+            tableName: stations
+        - createIndex:
+            columns:
+              - column:
+                  name: call_sign
+            indexName: idx_stations_call_sign
+            tableName: stations
+        - createIndex:
+            columns:
+              - column:
+                  name: entry_dttm
+            indexName: idx_stations_entry_dttm
+            tableName: stations
+  - changeSet:
+      id: 20241114-1209
+      labels: initial, stations
+      author: mtilden
+      preConditions:
+        onFail: MARK_RAN
+        not:
+          tableExists:
+            tableName: equipment
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pkey_equipment_id
+                  name: equipment_id
+                  remarks: Unique internal identifier of station
+                  type: BIGSERIAL
+              - column:
+                  name: station_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: equipment_type
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: location
+                  type: GEOGRAPHY
+              - column:
+                  name: rpg_id
+                  type: integer
+              - column:
+                  constraints:
+                    nullable: false
+                  defaultValue: false
+                  name: validated
+                  type: boolean
+              - column:
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: now()
+                  name: entry_dttm
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  defaultValueComputed: now()
+                  name: update_dttm
+                  type: TIMESTAMP WITHOUT TIME ZONE
+            remarks: Table to store stations equipment in
+            tableName: equipment
+        - addForeignKeyConstraint:
+            baseColumnNames: station_id
+            baseTableName: equipment
+            constraintName: fk_equipment__station_id
+            deferrable: true
+            initiallyDeferred: false
+            onDelete: CASCADE
+            onUpdate: NO ACTION
+            referencedColumnNames: station_id
+            referencedTableName: stations
+            validate: true
+        - addUniqueConstraint:
+            columnNames: station_id, equipment_type
+            constraintName: uk_equipment
+            tableName: equipment
+        - createIndex:
+            columns:
+              - column:
+                  name: location
+            indexName: idx_equipment_location
+            tableName: equipment
+        - createIndex:
+            columns:
+              - column:
+                  name: rpg_id
+            indexName: idx_equipment_rpg_id
+            tableName: equipment
+        - createIndex:
+            columns:
+              - column:
+                  name: entry_dttm
+            indexName: idx_equipment_entry_dttm
+            tableName: equipment

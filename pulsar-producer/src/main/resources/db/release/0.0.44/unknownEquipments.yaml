@@ -1,0 +1,41 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20250303-1100
+      labels: station, data
+      author: mtilden
+      preConditions:
+        onFail: MARK_RAN
+        sqlCheck:
+          expectedResult: 31260
+          sql: "select count(*) from stations"
+      changes:
+        - sql:
+            INSERT INTO stations (call_sign, name, city, state, country, wmo_index, wmo_region, end_date, validated, entry_dttm, update_dttm) VALUES ('UNOWN', 'UNKNOWN', null, null, null, null, null, null, true, '2024-11-19 18:10:06.288868', null);
+  - changeSet:
+      id: 20250303-1101
+      labels: equipment, data
+      author: mtilden
+      preConditions:
+        onFail: MARK_RAN
+        sqlCheck:
+          expectedResult: 32196
+          sql: "select count(*) from equipment"
+      changes:
+        - sql:
+              INSERT INTO equipment (station_id, equipment_type, location, validated, entry_dttm, update_dttm)
+            VALUES ((SELECT station_id FROM stations WHERE call_sign = 'UNOWN'), 'BUOY_MOBILE', null, true, '2024-11-18 20:37:25.609574', null);
+              INSERT INTO equipment (station_id, equipment_type, location, validated, entry_dttm, update_dttm)
+            VALUES ((SELECT station_id FROM stations WHERE call_sign = 'UNOWN'), 'SHIP_MOBILE', null, true, '2024-11-18 20:37:25.609574', null);
+  - changeSet:
+      id: 20250303-1102
+      labels: equipment, data
+      author: mtilden
+      preConditions:
+        onFail: MARK_RAN
+        sqlCheck:
+          expectedResult: 32198
+          sql: "select count(*) from equipment"
+      changes:
+        - sql:
+            INSERT INTO equipment (station_id, equipment_type, location, validated, entry_dttm, update_dttm)
+            VALUES ((SELECT station_id FROM stations WHERE call_sign = 'UNOWN'), 'SURFACE_MOBILE', null, true, '2024-11-18 20:37:25.609574', null);

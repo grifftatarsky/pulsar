@@ -2,33 +2,43 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
     <version>3.5.4</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
+
   <groupId>com.gpt</groupId>
   <artifactId>pulsar-producer</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>pulsar-producer</name>
   <description>pulsar-producer</description>
   <url/>
+
   <licenses>
     <license/>
   </licenses>
+
   <developers>
     <developer/>
   </developers>
+
   <scm>
     <connection/>
     <developerConnection/>
     <tag/>
     <url/>
   </scm>
+
   <properties>
     <java.version>24</java.version>
+    <geolatte.version>1.10</geolatte.version>
+    <jakarta.persistence.version>3.2.0</jakarta.persistence.version>
+    <liquibase.version>4.31.1</liquibase.version>
   </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -40,21 +50,11 @@
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-thymeleaf</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.github.wimdeblauwe</groupId>
-      <artifactId>htmx-spring-boot-thymeleaf</artifactId>
-      <version>4.0.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.webjars.npm</groupId>
-      <artifactId>htmx.org</artifactId>
-      <version>1.9.12</version>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-validation</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -81,6 +81,38 @@
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
     </dependency>
+
+    <dependency>
+      <groupId>org.geolatte</groupId>
+      <artifactId>geolatte-geom</artifactId>
+      <version>${geolatte.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geolatte</groupId>
+      <artifactId>geolatte-geojson</artifactId>
+      <version>${geolatte.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.liquibase</groupId>
+      <artifactId>liquibase-core</artifactId>
+      <version>${liquibase.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.hibernate.orm</groupId>
+      <artifactId>hibernate-spatial</artifactId>
+      <version>${hibernate.version}</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -99,6 +131,9 @@
               <artifactId>lombok</artifactId>
             </path>
           </annotationProcessorPaths>
+          <source>24</source>
+          <target>24</target>
+          <compilerArgs>--enable-preview</compilerArgs>
         </configuration>
       </plugin>
       <plugin>

@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - include:
+      file: db/common/0.0.1/ddl/properties.yaml
+  - include:
+      context: "test"
+      file: db/common/0.0.1/ddl/addExtensions.yaml
+  - include:
+      file: db/common/0.0.40/errorLogTable.yaml
+  - include:
+      file: db/common/0.0.52/addErrorLogMessageColumn.yaml

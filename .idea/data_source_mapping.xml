@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourcePerFileMappings">
+    <file url="file://$PROJECT_DIR$/pulsar-producer/src/main/java/com/gpt/pulsarproducer/outbox/OutboxRepository.java" value="816fb03d-8ccd-42ee-bdb9-4b757cb4f865" />
+  </component>
+</project>
